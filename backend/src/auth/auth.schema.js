@@ -15,4 +15,4 @@ const registroSchema = z.object({
 
 })
 
-export default { registroSchema };
+export { registroSchema };

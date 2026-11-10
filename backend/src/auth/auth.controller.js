@@ -1,8 +1,8 @@
-const { z } = require("zod");
-const { registroSchema } = require("./auth.schema");
-const authService = require("./auth.service");
+import { z } from "zod";
+import { registroSchema } from "./auth.schema.js";
+import * as authService from "./auth.service.js";
 
-async function registro(req, res) {
+export async function registro(req, res) {
   const validacion = registroSchema.safeParse(req.body);
 
   if (!validacion.success) {
@@ -28,5 +28,3 @@ async function registro(req, res) {
     return res.status(500).json({ mensaje: "Error interno del servidor" });
   }
 }
-
-module.exports = { registro };

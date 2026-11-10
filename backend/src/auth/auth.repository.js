@@ -1,6 +1,6 @@
-const pool = require("../config/db");
+import pool from "../config/db.js";
 
-async function buscarPorCorreo(correo) {
+export async function buscarPorCorreo(correo) {
   const [filas] = await pool.execute(
     "SELECT id from usuarios where correo = ?",
     [correo]
@@ -9,7 +9,7 @@ async function buscarPorCorreo(correo) {
   return filas[0] || null;
 }
 
-async function obtenerRolCliente() {
+export async function obtenerRolCliente() {
   const [filas] = await pool.execute(
     "SELECT id from roles where nombre = ?",
     ["cliente"]
@@ -18,7 +18,7 @@ async function obtenerRolCliente() {
 
 }
 
-async function crearUsuario(datos) {
+export async function crearUsuario(datos) {
   const [resultado] = await pool.execute(
     `INSERT INTO usuarios
             (nombre, correo, telefono, password_hash, rol_id)
@@ -35,9 +35,3 @@ async function crearUsuario(datos) {
   );
   return resultado.insertId;
 }
-
-module.exports = {
-  buscarPorCorreo,
-  obtenerRolCliente,
-  crearUsuario
-};

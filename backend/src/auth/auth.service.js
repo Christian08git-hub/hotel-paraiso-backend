@@ -1,7 +1,7 @@
-const argon2 = require("argon2");
-const repository = require("./auth.repository");
+import argon2 from "argon2";
+import * as repository from "./auth.repository.js";
 
-async function registrar(datos) {
+export async function registrar(datos) {
   const existente = await repository.buscarPorCorreo(datos.correo);
 
   if (existente) {
@@ -48,5 +48,3 @@ async function registrar(datos) {
     rol: "cliente"
   };
 }
-
-module.exports = { registrar };

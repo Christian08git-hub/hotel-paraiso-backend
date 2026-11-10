@@ -1,10 +1,9 @@
-const express = require("express");
-const cors = require("cors");
-const helmet = require("helmet");
+import express from "express";
+import cors from "cors";
+import helmet from "helmet";
 
-const pool = require("./config/db");
-
-const authRoutes = require("./modules/auth/auth.routes");
+import pool from "./config/db.js";
+import authRoutes from "./auth/auth.routes.js";
 
 const app = express();
 
@@ -45,4 +44,4 @@ app.get("/api/test-db", async (req, res) => {
   }
 });
 
-module.exports = app;
+export default app;
