@@ -2,6 +2,6 @@ POST  HTTP://localhost:3000/api/auth/login
 Content-Type: application/json
 
 {
-  "correo":"ana@correo.com",
-  "password":"clave12345"
+  "correo":"carlos@hotel.com",
+  "password":"12345678"
 }
