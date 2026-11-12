@@ -1,6 +1,6 @@
-const express = require("express");
-const { registro, login, obtenerPerfil } = require("./auth.controller");
-const verificarToken = require("../middlewares/verificarToken");
+import express from "express";
+import { registro, login, obtenerPerfil } from "./auth.controller.js";
+import verificarToken from "../middlewares/verificarToken.js";
 
 const router = express.Router();
 
@@ -10,4 +10,4 @@ router.post("/login", login);
 // Ruta protegida: requiere un JWT válido
 router.get("/me", verificarToken, obtenerPerfil);
 
-module.exports = router;
+export default router;
