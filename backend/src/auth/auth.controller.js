@@ -1,30 +1,42 @@
 import { z } from "zod";
-import { registroSchema } from "./auth.schema.js";
+import { registroSchema, loginSchema } from "./auth.schema.js";
 import * as authService from "./auth.service.js";
+
+function responderError(res, error) {
+  console.error("Error de autenticación:", error.message);
+  return res.status(error.status || 500).json({
+    mensaje: error.status ? error.message : "Error interno del servidor"
+  });
+}
 
 export async function registro(req, res) {
   const validacion = registroSchema.safeParse(req.body);
-
   if (!validacion.success) {
     return res.status(400).json({
       mensaje: "Datos de registro inválidos",
       errores: z.flattenError(validacion.error).fieldErrors
     });
   }
-
   try {
     const usuario = await authService.registrar(validacion.data);
-
-    return res.status(201).json({
-      mensaje: "Usuario registrado correctamente",
-      usuario
-    });
+    return res.status(201).json({ mensaje: "Cuenta creada correctamente", usuario });
   } catch (error) {
-    if (error.status) {
-      return res.status(error.status).json({ mensaje: error.message });
-    }
+    return responderError(res, error);
+  }
+}
 
-    console.error(error);
-    return res.status(500).json({ mensaje: "Error interno del servidor" });
+export async function login(req, res) {
+  const validacion = loginSchema.safeParse(req.body);
+  if (!validacion.success) {
+    return res.status(400).json({
+      mensaje: "Datos de inicio de sesión inválidos",
+      errores: z.flattenError(validacion.error).fieldErrors
+    });
+  }
+  try {
+    const resultado = await authService.iniciarSesion(validacion.data);
+    return res.status(200).json({ mensaje: "Sesión iniciada correctamente", ...resultado });
+  } catch (error) {
+    return responderError(res, error);
   }
 }
