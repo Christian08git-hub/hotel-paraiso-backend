@@ -1,42 +1,13 @@
-import { z } from "zod";
-import { registroSchema, loginSchema } from "./auth.schema.js";
-import * as authService from "./auth.service.js";
+const express = require("express");
+const { registro, login, obtenerPerfil } = require("./auth.controller");
+const verificarToken = require("../middlewares/verificarToken");
 
-function responderError(res, error) {
-  console.error("Error de autenticación:", error.message);
-  return res.status(error.status || 500).json({
-    mensaje: error.status ? error.message : "Error interno del servidor"
-  });
-}
+const router = express.Router();
 
-export async function registro(req, res) {
-  const validacion = registroSchema.safeParse(req.body);
-  if (!validacion.success) {
-    return res.status(400).json({
-      mensaje: "Datos de registro inválidos",
-      errores: z.flattenError(validacion.error).fieldErrors
-    });
-  }
-  try {
-    const usuario = await authService.registrar(validacion.data);
-    return res.status(201).json({ mensaje: "Cuenta creada correctamente", usuario });
-  } catch (error) {
-    return responderError(res, error);
-  }
-}
+router.post("/registro", registro);
+router.post("/login", login);
 
-export async function login(req, res) {
-  const validacion = loginSchema.safeParse(req.body);
-  if (!validacion.success) {
-    return res.status(400).json({
-      mensaje: "Datos de inicio de sesión inválidos",
-      errores: z.flattenError(validacion.error).fieldErrors
-    });
-  }
-  try {
-    const resultado = await authService.iniciarSesion(validacion.data);
-    return res.status(200).json({ mensaje: "Sesión iniciada correctamente", ...resultado });
-  } catch (error) {
-    return responderError(res, error);
-  }
-}
+// Ruta protegida: requiere un JWT válido
+router.get("/me", verificarToken, obtenerPerfil);
+
+module.exports = router;
