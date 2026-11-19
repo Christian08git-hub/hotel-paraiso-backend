@@ -8,6 +8,8 @@ const pool = require("./config/db");
 const authRoutes = require("./auth/auth.routes");
 const habitacionesRoutes = require("./habitaciones/habitaciones.routes");
 
+const reservasRoutes = require("./reservas/reservas.routes")
+
 const app = express(); 
 
 app.use(helmet());
@@ -20,6 +22,8 @@ app.use(express.json());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/habitaciones", habitacionesRoutes);
+app.use("/api/reservas", reservasRoutes);
+
 
 app.get("/api", (req, res) =>{
     res.status(200).json({
