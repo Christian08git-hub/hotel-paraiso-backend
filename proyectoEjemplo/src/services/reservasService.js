@@ -40,6 +40,7 @@ export async function crearReservaAPI({
   habitacion_id,
   fecha_entrada,
   fecha_salida,
+  estado = 'Pendiente',
 }) {
   return solicitar('', {
     method: 'POST',
@@ -47,6 +48,22 @@ export async function crearReservaAPI({
       habitacion_id: Number(habitacion_id),
       fecha_entrada,
       fecha_salida,
+      estado,
+    }),
+  });
+}
+
+export async function actualizarReservaAPI(
+  id,
+  { habitacion_id, fecha_entrada, fecha_salida, estado },
+) {
+  return solicitar(`/${encodeURIComponent(id)}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+      habitacion_id: Number(habitacion_id),
+      fecha_entrada,
+      fecha_salida,
+      estado,
     }),
   });
 }

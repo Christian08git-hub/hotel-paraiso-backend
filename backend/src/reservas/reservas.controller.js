@@ -7,17 +7,40 @@ function fechaReal(valor) {
     !Number.isNaN(fecha.getTime()) && fecha.toISOString().slice(0, 10) === valor
   );
 }
+// Al crear, el cliente puede dejar la reserva Pendiente o Confirmada.
 const schema = z
   .object({
     habitacion_id: z.number().int().positive(),
     fecha_entrada: z.string().refine(fechaReal, 'Fecha de entrada inválida'),
     fecha_salida: z.string().refine(fechaReal, 'Fecha de salida inválida'),
+    estado: z.enum(['Pendiente', 'Confirmada']).default('Pendiente'),
   })
   .strict()
   .refine((d) => d.fecha_salida > d.fecha_entrada, {
     message: 'La salida debe ser posterior a la entrada',
     path: ['fecha_salida'],
   });
+// Al editar, el estado puede ser cualquiera de los tres.
+const schemaActualizar = z
+  .object({
+    habitacion_id: z.number().int().positive(),
+    fecha_entrada: z.string().refine(fechaReal, 'Fecha de entrada inválida'),
+    fecha_salida: z.string().refine(fechaReal, 'Fecha de salida inválida'),
+    estado: z.enum(['Pendiente', 'Confirmada', 'Cancelada']),
+  })
+  .strict()
+  .refine((d) => d.fecha_salida > d.fecha_entrada, {
+    message: 'La salida debe ser posterior a la entrada',
+    path: ['fecha_salida'],
+  });
+function hoyBogota() {
+  return new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'America/Bogota',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(new Date());
+}
 async function listar(req, res, next) {
   try {
     res.json({ reservas: await repository.listar() });
@@ -46,12 +69,7 @@ async function crear(req, res, next) {
       mensaje: 'Datos de reserva inválidos',
       errores: z.flattenError(resultado.error).fieldErrors,
     });
-  const hoy = new Intl.DateTimeFormat('en-CA', {
-    timeZone: 'America/Bogota',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  }).format(new Date());
+  const hoy = hoyBogota();
   if (resultado.data.fecha_entrada < hoy)
     return res.status(400).json({
       mensaje: 'No se permiten reservas en fechas pasadas',
@@ -59,6 +77,31 @@ async function crear(req, res, next) {
   try {
     const reserva = await repository.crear(req.usuarioId, resultado.data);
     res.status(201).json({ mensaje: 'Reserva registrada', reserva });
+  } catch (error) {
+    if (error.status)
+      return res.status(error.status).json({ mensaje: error.message });
+    next(error);
+  }
+}
+async function actualizar(req, res, next) {
+  const id = Number(req.params.id);
+  if (!Number.isSafeInteger(id) || id <= 0) {
+    return res.status(400).json({ mensaje: 'ID de reserva inválido' });
+  }
+  const resultado = schemaActualizar.safeParse(req.body);
+  if (!resultado.success)
+    return res.status(400).json({
+      mensaje: 'Datos de reserva inválidos',
+      errores: z.flattenError(resultado.error).fieldErrors,
+    });
+  try {
+    const reserva = await repository.actualizar(
+      req.usuarioId,
+      id,
+      resultado.data,
+      hoyBogota(),
+    );
+    return res.status(200).json({ mensaje: 'Reserva actualizada', reserva });
   } catch (error) {
     if (error.status)
       return res.status(error.status).json({ mensaje: error.message });
@@ -86,5 +129,6 @@ module.exports = {
   listarPropias,
   habitacionesDisponibles,
   crear,
+  actualizar,
   cancelar,
 };

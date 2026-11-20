@@ -16,4 +16,6 @@ router.get(
   controller.listarPropias,
 );
 router.post('/', autorizarRoles('cliente'), controller.crear);
+router.put('/:id', autorizarRoles('cliente'), controller.actualizar);
+router.patch('/:id/cancelar', autorizarRoles('cliente'), controller.cancelar);
 module.exports = router;
