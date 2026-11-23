@@ -8,6 +8,7 @@ const {
   tareasPorEmpleado,
   tareasPorEstado,
   habitacionesPorTipo,
+  tareasPorTipo,
 } = require('./reportes.controller');
 
 // Todas las rutas requieren un JWT válido
@@ -21,5 +22,7 @@ router.get('/tareas-empleado', autorizarRoles('admin'), tareasPorEmpleado);
 router.get('/tareas-estado', autorizarRoles('admin'), tareasPorEstado);
 
 router.get('/habitaciones-tipo', autorizarRoles('admin'), habitacionesPorTipo);
+
+router.get('/tareas-tipo', autorizarRoles('admin'), tareasPorTipo);
 
 module.exports = router;

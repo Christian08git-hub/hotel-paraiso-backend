@@ -13,6 +13,7 @@ const reservasRoutes = require('./reservas/reservas.routes');
 const clientesRoutes = require('./clientes/clientes.routes');
 const empleadosRoutes = require('./empleados/empleados.routes');
 const tareasRoutes = require('./tareas/tareas.routes');
+
 const reportesRoutes = require('./reportes/reportes.routes');
 
 const app = express();
@@ -60,8 +61,10 @@ app.get('/api/test-db', async (req, res) => {
 
 app.use((error, req, res, next) => {
   console.error('Error API:', error);
-  res.status(error.status || 500).json({
-    mensaje: error.status ? error.message : 'Error interno del servidor',
-  });
+  res
+    .status(error.status || 500)
+    .json({
+      mensaje: error.status ? error.message : 'Error interno del servidor',
+    });
 });
 module.exports = app;

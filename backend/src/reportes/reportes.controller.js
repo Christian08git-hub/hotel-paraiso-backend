@@ -1,4 +1,4 @@
-const pool = require('../config/db.js');
+const pool = require('../config/db');
 
 // 1. Reservas agrupadas por estado
 const reservasPorEstado = async (req, res) => {
@@ -70,9 +70,28 @@ const habitacionesPorTipo = async (req, res) => {
   }
 };
 
+// Reporte: tareas agrupadas por tipo de actividad
+const tareasPorTipo = async (req, res) => {
+  try {
+    const [resultados] = await pool.query(`
+      SELECT tipo, COUNT(*) AS cantidad
+      FROM tareas
+      GROUP BY tipo
+      ORDER BY cantidad DESC
+    `);
+
+    res.json(resultados);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      mensaje: 'Error al consultar tareas por tipo',
+    });
+  }
+};
 module.exports = {
   reservasPorEstado,
   tareasPorEmpleado,
   tareasPorEstado,
   habitacionesPorTipo,
+  tareasPorTipo,
 };

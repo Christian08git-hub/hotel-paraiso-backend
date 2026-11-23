@@ -1,9 +1,7 @@
 const API_URL = 'http://localhost:3000/api/reportes';
 
 async function consultarReporte(ruta) {
-  const sesion = JSON.parse(
-    sessionStorage.getItem('sesionHotel') || 'null'
-  );
+  const sesion = JSON.parse(sessionStorage.getItem('sesionHotel') || 'null');
 
   const token = sesion?.token;
 
@@ -13,8 +11,8 @@ async function consultarReporte(ruta) {
 
   const respuesta = await fetch(`${API_URL}/${ruta}`, {
     headers: {
-      Authorization: `Bearer ${token}`
-    }
+      Authorization: `Bearer ${token}`,
+    },
   });
 
   if (!respuesta.ok) {
@@ -30,8 +28,7 @@ export const obtenerReservasPorEstado = () =>
 export const obtenerTareasPorEmpleado = () =>
   consultarReporte('tareas-empleado');
 
-export const obtenerTareasPorEstado = () =>
-  consultarReporte('tareas-estado');
+export const obtenerTareasPorTipo = () => consultarReporte('tareas-tipo');
 
 export const obtenerHabitacionesPorTipo = () =>
   consultarReporte('habitaciones-tipo');
