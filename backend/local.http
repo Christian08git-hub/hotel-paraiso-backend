@@ -42,6 +42,14 @@
 #   "password":"12345678"
 # }
 
-GET  http://localhost:3000/api/reportes/habitaciones-empleado
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2wiOiJhZG1pbiIsImlhdCI6MTc5NTQzNTU5MCwiZXhwIjoxNzk1NDQyNzkwLCJzdWIiOiIzIn0.0WzsTrvvVtk_rE0_hH34CtX69Te3bkTUclQXmUBvb2g
+# GET  http://localhost:3000/api/reportes/habitaciones-empleado
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2wiOiJhZG1pbiIsImlhdCI6MTc5NTQzNTU5MCwiZXhwIjoxNzk1NDQyNzkwLCJzdWIiOiIzIn0.0WzsTrvvVtk_rE0_hH34CtX69Te3bkTUclQXmUBvb2g
 
+
+POST  http://localhost:3000/api/recuperacion/localhost:3000/api/recuperacion/solicitar
+Content-Type: application/json
+
+{
+  "token": "a158e4dcb86b84d8e86ffd0a3be44b2b86789db3cc83ce5ba8d1a41efaecebbb",
+  "nuevaPassword": "12345678"
+}
